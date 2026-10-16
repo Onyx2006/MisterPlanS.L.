@@ -39,3 +39,21 @@ CREATE TABLE reserva_evento (
     KEY idx_evento_reserva (reserva_id, fecha_creacion),
     CONSTRAINT fk_evento_reserva FOREIGN KEY (reserva_id) REFERENCES reserva (id) ON DELETE CASCADE -- Soy consciente que ON DELETE CASCADE puede ser peligroso pero para una prueba rápida me sirve
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- DATOS DE EJEMPLO
+-- Mezcla de estados y fechas (pasadas y futuras) para que los filtros se vean funcionar (Requisito)
+-- Le puse un apóstrofo (id 8) y HTML en las notas (id 11) para comprobar el escapado
+
+INSERT INTO reserva (id, nombre_huesped, email_huesped, nombre_alojamiento, fecha_entrada, fecha_salida, estado, importe, notas, fecha_creacion) VALUES
+( 1, 'Oliver Gamboa Mesa', 'olivergamboamesa@example.com', 'Hotel Costa del sol', '2026-09-12', '2026-09-15', 'confirmada',  345.00, 'Llegada tarde, después de las 22:00.', '2026-08-20 10:15:00'),
+( 2, 'Carlos Ruiz Martín', 'carlos57ruiz@example.com', 'Apartamentos Casa Miguel', '2026-10-02', '2026-10-09', 'confirmada',  812.50, NULL, '2026-08-30 17:42:00'),
+( 3, 'Marta Gómez Salas', 'martayumgomez@example.com', 'Hotel Costa del sol', '2026-10-24', '2026-10-26', 'pendiente',   198.00, 'Habitación doble con cuna.', '2026-10-10 09:03:00'),
+( 4, 'John Peterson', 'john.peterson@example.com', 'Casa Rural Berenjena', '2026-11-06', '2026-11-10', 'confirmada',  520.00, 'Viaja con perro pequeño.', '2026-09-18 12:30:00'),
+( 5, 'Elena Navarro Pastor', 'elena.nava.rro@example.com', 'Parador de Ronda', '2026-11-14', '2026-11-16', 'pendiente',   330.00, NULL, '2026-10-12 18:20:00'),
+( 6, 'Pablo Díaz Rey', 'pablodiazrey@example.com', 'Apartamentos Casa Miguel', '2026-09-05', '2026-09-08', 'cancelada',   276.00, 'Cancelada por el cliente.', '2026-08-02 08:55:00'),
+( 7, 'Sofía Marín Vega', 'sofia.09.marin@example.com', 'Hotel Costalita Cancelada', '2026-12-26', '2027-01-02', 'confirmada', 1450.00, 'Cena de Nochevieja incluida.','2026-09-25 20:10:00'),
+( 8, 'Andrés O''Brien', 'andreseyeyobrien@example.com', 'Hotel Costalita Cancelada', '2026-10-30', '2026-11-02', 'pendiente',   405.75, 'Pide late check-out.', '2026-10-14 11:47:00'),
+( 9, 'Laura Castillo Pérez', 'laura654654castillo@example.com', 'Casa Rural Berenjena', '2026-10-17', '2026-10-19', 'cancelada',   240.00, NULL, '2026-09-30 16:05:00'),
+(10, 'Ahmed El Idrissi', 'ahmed.elidrissi@example.com', 'Parador de Ronda', '2026-12-05', '2026-12-08', 'confirmada',  690.00, 'Puente de diciembre.', '2026-10-01 09:12:00'),
+(11, 'Beatriz Solís Vidal', 'beatrizvidalsolis@example.com', 'Hotel Costa del sol', '2026-11-20', '2026-11-23', 'pendiente',   372.00, 'Aniversario. <b>Prueba de escapado</b> <script>alert(1)</script>', '2026-10-15 13:33:00'),
+(12, 'Iván Torres Gil', 'ivan.torresgil09@example.com', 'Apartamentos Casa Miguel', '2026-08-01', '2026-08-05', 'confirmada',  560.00, NULL, '2026-06-20 19:00:00');
