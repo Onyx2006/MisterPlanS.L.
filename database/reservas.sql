@@ -28,3 +28,14 @@ CREATE TABLE reserva (
     KEY idx_reserva_estado_entrada (estado, fecha_entrada),
     KEY idx_reserva_fechas (fecha_entrada, fecha_salida)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE reserva_evento (
+    id             INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    reserva_id     INT UNSIGNED NOT NULL,
+    tipo           ENUM('creada','confirmada','cancelada') NOT NULL,
+    descripcion    VARCHAR(255) NOT NULL,
+    fecha_creacion DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    KEY idx_evento_reserva (reserva_id, fecha_creacion),
+    CONSTRAINT fk_evento_reserva FOREIGN KEY (reserva_id) REFERENCES reserva (id) ON DELETE CASCADE -- Soy consciente que ON DELETE CASCADE puede ser peligroso pero para una prueba rápida me sirve
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
