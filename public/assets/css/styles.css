@@ -1,0 +1,209 @@
+/* CSS básico pero responsivo */
+:root { 
+    --borde: #d0d5dd; 
+    --texto: #1d2939; 
+    --fondo: #fff; 
+    --acento: #1d4ed8; 
+    --error: #b42318; 
+    --ok: #067647; 
+}
+
+* { 
+    box-sizing: border-box; 
+}
+
+body { 
+    margin: 0; 
+    font: 16px/1.5 system-ui, sans-serif; 
+    color: var(--texto); 
+    background: var(--fondo); 
+}
+
+main { 
+    max-width: 64rem; 
+    margin: 0 auto; 
+    padding: 1rem; 
+}
+
+.cabecera { 
+    padding: .75rem 1rem; 
+    border-bottom: 1px solid var(--borde); 
+}
+
+.cabecera a { 
+    color: inherit; 
+    font-weight: 600; 
+    text-decoration: none; 
+}
+
+a { 
+    color: var(--acento); 
+}
+
+.filtros { 
+    display: grid; 
+    grid-template-columns: 
+    repeat(auto-fit, minmax(10rem, 1fr)); 
+    gap: .75rem; 
+    align-items: end; 
+    margin-bottom: 1rem; 
+}
+
+.campo { 
+    display: flex; 
+    flex-direction: column; 
+    gap: .25rem; margin-bottom: .5rem; 
+}
+
+.filtros .campo { 
+    margin-bottom: 0; 
+}
+
+input, select, textarea, button { 
+    font: inherit; 
+    padding: .4rem .5rem; 
+    border: 1px solid var(--borde); 
+    border-radius: 4px; 
+}
+
+button { 
+    cursor: pointer; 
+    background: var(--acento); 
+    color: #fff; 
+    border-color: var(--acento); 
+}
+
+button.peligro { 
+    background: #fff; 
+    color: var(--error); 
+    border-color: var(--error); 
+}
+
+button:disabled { 
+    opacity: .5; 
+    cursor: progress; 
+}
+
+[aria-invalid="true"] { 
+    border-color: var(--error); 
+}
+
+.error { 
+    color: var(--error); 
+    font-size: .875rem; 
+    min-height: 1em; 
+}
+
+.panel { 
+    border: 1px solid var(--borde); 
+    border-radius: 4px; 
+    padding: .5rem 1rem; 
+    margin-bottom: 1rem; 
+}
+
+.aviso { 
+    padding: .6rem .8rem; 
+    border-radius: 4px; 
+    margin-bottom: 1rem; 
+    border: 1px solid; 
+}
+
+.aviso-ok { 
+    color: var(--ok); 
+    border-color: var(--ok); 
+}
+
+.aviso-error { 
+    color: var(--error); 
+    border-color: var(--error); 
+}
+
+.aviso ul { 
+    margin: 0; 
+    padding-left: 1.2rem; 
+}
+
+[hidden] { 
+    display: none !important; 
+}
+
+.tabla-scroll { 
+    overflow-x: auto; 
+}
+
+table { 
+    width: 100%; 
+    border-collapse: collapse; 
+}
+
+th, td { 
+    padding: .5rem; 
+    border-bottom: 1px solid var(--borde); 
+    text-align: left; 
+    white-space: nowrap; 
+}
+
+.num { 
+    text-align: right; 
+}
+
+#listado[aria-busy="true"] { 
+    opacity: .5; 
+}
+
+.estado { 
+    padding: .1rem .5rem; 
+    border-radius: 999px; 
+    font-size: .8rem; 
+    border: 1px solid; 
+    text-transform: capitalize; 
+}
+
+.estado-pendiente { 
+    color: #b54708; 
+} 
+
+.estado-confirmada { 
+    color: var(--ok); 
+} 
+
+.estado-cancelada { 
+    color: var(--error); 
+}
+
+.datos { 
+    display: grid; 
+    grid-template-columns: max-content 1fr; 
+    gap: .25rem 1rem; 
+}
+
+.datos dt { 
+    font-weight: 600; 
+} 
+
+.datos dd { 
+    margin: 0; 
+}
+
+.acciones { 
+    display: flex; 
+    gap: .5rem; 
+    margin: 1rem 0; 
+}
+
+.timeline { 
+    padding-left: 1.2rem; 
+}
+
+.timeline li { 
+    margin-bottom: .4rem; 
+}
+
+#paginacion { 
+    display: flex; 
+    gap: 1rem; 
+    margin-top: 1rem; 
+}
+
+/* Responsive */
+@media (max-width: 40rem) { .datos { grid-template-columns: 1fr; } .datos dd { margin-bottom: .5rem; } }
