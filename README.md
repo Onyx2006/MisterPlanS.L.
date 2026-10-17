@@ -2,6 +2,8 @@
 API REST en **PHP nativo** (sin framework), vistas con **Twig** y una interfaz en **JavaScript vanilla** que consume la API.
 - **Stack:** PHP ≥ 8.1 · MySQL/MariaDB (PDO) · Twig 3 · JS (módulos ES, sin librerías) · PHPUnit
 
+Sitio web accesible: https://misterplan.infinityfree.io/
+
 ## ¿Cómo ponerlo en marcha?
 Requisitos: PHP 8.1+ con `pdo_mysql` y `mbstring`, Composer y MySQL/MariaDB (MAMP/WAMP sirven).
 
