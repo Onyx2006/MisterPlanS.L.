@@ -172,3 +172,41 @@ function validarCliente(d) {
     }
     return e;
 }
+
+formCrear.addEventListener('submit', async (ev) => {
+    ev.preventDefault(); // Buenas prácticas que me enseñaron en el ciclo superior
+    limpiarErrores(formCrear);
+
+    const datos = Object.fromEntries(new FormData(formCrear));
+    for (const clave of Object.keys(datos)) datos[clave] = String(datos[clave]).trim();
+    datos.importe = datos.importe.replace(',', '.');
+
+    const errores = validarCliente({ ...datos, importe: datos.importe });
+    if (Object.keys(errores).length) {
+        pintarErrores(formCrear, errores);
+        formCrear.querySelector('[aria-invalid="true"]')?.focus();
+        return;
+    }
+
+    const boton = formCrear.querySelector('button[type="submit"]');
+    boton.disabled = true;
+    setCargando(formCrear, true);
+    try {
+        const { data } = await reservasApi.crear(datos);
+        formCrear.reset();
+        mostrarAviso('ok', `Reserva #${data.id} creada correctamente.`);
+        await cargar(1);
+    } catch (e) {
+        if (e instanceof ApiError && e.status === 422) {
+            // El servidor es la autoridad: sus errores por campo se muestran junto a cada input.
+            const sueltos = pintarErrores(formCrear, e.errores);
+            mostrarAviso('error', ['Revisa el formulario.', ...sueltos].join(' '));
+            formCrear.querySelector('[aria-invalid="true"]')?.focus();
+        } else {
+            mostrarAviso('error', mensajeError(e));
+        }
+    } finally {
+        boton.disabled = false;
+        setCargando(formCrear, false);
+    }
+});
