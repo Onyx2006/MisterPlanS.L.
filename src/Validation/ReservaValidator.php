@@ -107,7 +107,7 @@ final class ReservaValidator
         $huesped = $this->texto($consulta, 'huesped', 0, 120, false, $err);
 
         $pagina = $this->entero($consulta, 'page', 1, 1, 1_000_000, $err);
-        $porPagina = $this->entero($consulta, 'per_page', 20, 1, 100, $err);
+        $porPagina = $this->entero($consulta, 'per_page', 10, 1, 100, $err);
 
         if ($err !== []) {
             throw new ValidationException($err, 400);
