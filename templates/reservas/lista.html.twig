@@ -1,0 +1,115 @@
+{% extends 'base.html.twig' %}
+{% import '_macros.html.twig' as f %}
+
+{% block title %}Listado{% endblock %}
+
+{% block contenido %}
+    <h1>Reservas</h1>
+
+    {% if errores %}
+        <div class="aviso aviso-error" role="alert">
+            <ul>{% for campo, mensaje in errores %}<li>{{ campo }}: {{ mensaje }}</li>{% endfor %}</ul>
+        </div>
+    {% endif %}
+
+    {# Sin JS este formulario sigue funcionando (GET normal); con JS se intercepta y se usa la API. #}
+    <form id="filtros" method="get" action="/" class="filtros">
+        <div class="campo">
+            <label for="f-estado">Estado</label>
+            <select id="f-estado" name="estado">
+                <option value="">Todos</option>
+                {% for e in estados %}
+                    <option value="{{ e }}"{% if filtros.estado == e %} selected{% endif %}>{{ e|capitalize }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="campo">
+            <label for="f-desde">Desde</label>
+            <input id="f-desde" name="desde" type="date" value="{{ filtros.desde }}">
+        </div>
+        <div class="campo">
+            <label for="f-hasta">Hasta</label>
+            <input id="f-hasta" name="hasta" type="date" value="{{ filtros.hasta }}">
+        </div>
+        <div class="campo">
+            <label for="f-huesped">Huésped</label>
+            <input id="f-huesped" name="huesped" type="search" maxlength="120" value="{{ filtros.huesped }}">
+        </div>
+        <div class="acciones-filtro">
+            <button type="submit">Filtrar</button>
+            <a href="/" id="limpiar">Limpiar</a>
+        </div>
+    </form>
+
+    {# [feature/frontend-js] inicio: formulario de alta (necesita lista.js) #}
+    <details id="nueva" class="panel">
+        <summary>Nueva reserva</summary>
+        <form id="form-reserva" novalidate>
+            {{ f.campo('nombre_huesped', 'Nombre del huésped', 'text', {required: 'required', maxlength: 120}) }}
+            {{ f.campo('email_huesped', 'Email', 'email', {required: 'required', maxlength: 190}) }}
+            {{ f.campo('nombre_alojamiento', 'Alojamiento', 'text', {required: 'required', maxlength: 150}) }}
+            {{ f.campo('fecha_entrada', 'Entrada', 'date', {required: 'required', min: 'now'|date('Y-m-d')}) }}
+            {{ f.campo('fecha_salida', 'Salida', 'date', {required: 'required'}) }}
+            {{ f.campo('importe', 'Importe (€)', 'text', {required: 'required', inputmode: 'decimal'}) }}
+            <div class="campo">
+                <label for="c-notas">Notas</label>
+                <textarea id="c-notas" name="notas" rows="3" maxlength="1000"></textarea>
+                <span class="error" data-error-for="notas"></span>
+            </div>
+            <button type="submit">Crear reserva</button>
+        </form>
+    </details>
+    {# [feature/frontend-js] fin #}
+
+    <section id="listado" aria-live="polite">
+        <p id="resumen">{{ meta.total }} reserva{{ meta.total == 1 ? '' : 's' }} · página {{ meta.page }} de {{ meta.total_pages }}</p>
+
+        <div class="tabla-scroll">
+            <table id="tabla-reservas">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Huésped</th>
+                        <th scope="col">Alojamiento</th>
+                        <th scope="col">Entrada</th>
+                        <th scope="col">Salida</th>
+                        <th scope="col">Estado</th>
+                        <th scope="col" class="num">Importe</th>
+                        <th scope="col">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for r in reservas %}
+                        <tr>
+                            <td>{{ r.id }}</td>
+                            <td>{{ r.nombre_huesped }}</td>
+                            <td>{{ r.nombre_alojamiento }}</td>
+                            <td>{{ r.fecha_entrada|date('d/m/Y') }}</td>
+                            <td>{{ r.fecha_salida|date('d/m/Y') }}</td>
+                            <td>{{ f.estado(r.estado) }}</td>
+                            <td class="num">{{ r.importe|number_format(2, ',', '.') }} €</td>
+                            <td>
+                                <a href="/reservas/{{ r.id }}">Ver</a>
+                                {% if r.estado != 'cancelada' %}
+                                    <button type="button" class="peligro" data-cancelar="{{ r.id }}">Cancelar</button>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr><td colspan="8">No hay reservas con esos filtros</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <nav id="paginacion" aria-label="Paginación">
+            {% if url_anterior %}<a href="{{ url_anterior }}" rel="prev">Anterior</a>{% endif %}
+            {% if url_siguiente %}<a href="{{ url_siguiente }}" rel="next">Siguiente</a>{% endif %}
+        </nav>
+    </section>
+{% endblock %}
+
+{% block scripts %}
+    {# [feature/frontend-js] #}
+    <script type="module" src="/assets/js/lista.js"></script>
+{% endblock %}
