@@ -103,3 +103,20 @@ El servicio depende de **interfaces** (repositorios y `Transaccion`): por eso su
 
 ## Tests
 `composer test`: validador (casos límite y hostiles) y servicio (transiciones, atomicidad, no-reactivación, 404) con dobles en memoria. Priorizo pocos tests con sentido sobre cobertura amplia.
+
+## Qué haría diferente con más tiempo
+- Tests de integración de los repositorios contra una BD real (MariaDB en CI) y del flujo HTTP completo
+- Disponibilidad real: ahora no hay catálogo de alojamientos; dos reservas del mismo alojamiento en las mismas fechas son posibles
+- Alojamiento como select si tuviese por ejemplo 5 alojamientos que el usuario tenga que escoger uno con un select y varios options y no escribirlos a mano
+- Guardar fechas/hora en UTC y convertir en la presentación; hoy usa la zona del servidor
+- Un endpoint que devuelva el fragmento HTML de la tabla (o plantillas compartidas) para no tener el pintado de filas duplicado en Twig y JS
+- Autenticación y autorización (quién puede confirmar/cancelar) y registro de *quién* hizo cada evento
+- Contenedor Docker + CI (lint, tests) y migraciones versionadas en lugar de un único `.sql`
+
+## Escalabilidad: 1000 reservas/hora
+1000/hora son ~0,3 escrituras por segundo: **no es un problema de carga** para este diseño; un solo servidor y una sola BD lo absorben con holgura. Lo que cambiaría, por orden de utilidad:
+1. **Integridad bajo concurrencia** (lo importante a esta escala): control de disponibilidad con restricción/locking por alojamiento y fechas, e **idempotencia** en el POST (cabecera `Idempotency-Key`) para que un reintento del cliente no duplique reservas.
+2. **Índices y paginación**: ya hay índices por estado/fechas y paginación obligatoria. El `LIKE '%x%'` por nombre no usa índice; con muchas filas pasaría a `FULLTEXT` o a búsqueda por prefijo.
+3. **Rate limiting** en el borde (proxy/WAF) y **observabilidad**: logs estructurados, métricas de latencia y tasa de 4xx/5xx.
+4. **Trabajo asíncrono**: si crear una reserva dispara emails o integraciones, a una cola, fuera de la petición.
+5. Solo si las lecturas dominaran: caché de listados y una réplica de lectura. Hoy sería sobreingeniería.
