@@ -137,3 +137,22 @@ paginacion.addEventListener('click', (ev) => {
     const pagina = enlace.dataset.pagina ?? new URL(enlace.href).searchParams.get('page') ?? '1';
     cargar(Number(pagina));
 });
+
+// Cancelar desde el listado
+tbody.addEventListener('click', async (ev) => {
+    const boton = ev.target.closest('button[data-cancelar]');
+    if (!boton) return;
+
+    const id = Number(boton.dataset.cancelar);
+    if (!window.confirm(`¿Cancelar la reserva #${id}? Esta acción no se puede deshacer`)) return;
+
+    boton.disabled = true;
+    try {
+        await reservasApi.cambiarEstado(id, 'cancelada');
+        mostrarAviso('ok', `Reserva #${id} cancelada.`);
+        await cargar(paginaActual);
+    } catch (e) {
+        mostrarAviso('error', mensajeError(e));
+        boton.disabled = false;
+    }
+});
