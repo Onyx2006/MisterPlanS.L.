@@ -156,3 +156,19 @@ tbody.addEventListener('click', async (ev) => {
         boton.disabled = false;
     }
 });
+
+// Crear reserva
+// Validación de frontend (me la enseñaron en el ciclo superior) pero la que cuenta es la del backend ya que esta se la pueden saltar
+function validarCliente(d) {
+    const e = {};
+    if (d.nombre_huesped.length < 2) e.nombre_huesped = 'Indica el nombre (mínimo 2 caracteres).';
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(d.email_huesped)) e.email_huesped = 'Email no válido.';
+    if (d.nombre_alojamiento.length < 2) e.nombre_alojamiento = 'Indica el alojamiento.';
+    if (!d.fecha_entrada) e.fecha_entrada = 'Indica la fecha de entrada.';
+    if (!d.fecha_salida) e.fecha_salida = 'Indica la fecha de salida.';
+    else if (d.fecha_entrada && d.fecha_salida <= d.fecha_entrada) e.fecha_salida = 'La salida debe ser posterior a la entrada.';
+    if (!/^\d{1,8}([.,]\d{1,2})?$/.test(d.importe) || Number(d.importe.replace(',', '.')) <= 0) {
+        e.importe = 'Importe no válido (ej. 120,50).';
+    }
+    return e;
+}
