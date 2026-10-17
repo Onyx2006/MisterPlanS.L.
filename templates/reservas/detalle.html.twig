@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+{% import '_macros.html.twig' as f %}
+
+{% block title %}Reserva #{{ reserva.id }}{% endblock %}
+
+{% block contenido %}
+    <p><a href="/">← Volver al listado</a></p>
+
+    <h1>Reserva #{{ reserva.id }} {{ f.estado(reserva.estado) }}</h1>
+
+    <dl class="datos">
+        <dt>Huésped</dt><dd>{{ reserva.nombre_huesped }}</dd>
+        <dt>Email</dt><dd>{{ reserva.email_huesped }}</dd>
+        <dt>Alojamiento</dt><dd>{{ reserva.nombre_alojamiento }}</dd>
+        <dt>Entrada</dt><dd>{{ reserva.fecha_entrada|date('d/m/Y') }}</dd>
+        <dt>Salida</dt><dd>{{ reserva.fecha_salida|date('d/m/Y') }}</dd>
+        <dt>Importe</dt><dd>{{ reserva.importe|number_format(2, ',', '.') }} €</dd>
+        {# nl2br escapa primero y añade <br> después: respeta saltos de línea sin necesidad de |raw. #}
+        <dt>Notas</dt><dd>{{ reserva.notas|default('—')|nl2br }}</dd>
+        <dt>Creada</dt><dd>{{ reserva.fecha_creacion|date('d/m/Y H:i') }}</dd>
+    </dl>
+
+    {% if reserva.estado != 'cancelada' %}
+        <div class="acciones" id="acciones">
+            {% if reserva.estado == 'pendiente' %}
+                <button type="button" data-accion="confirmada" data-id="{{ reserva.id }}">Confirmar</button>
+            {% endif %}
+            <button type="button" class="peligro" data-accion="cancelada" data-id="{{ reserva.id }}">Cancelar reserva</button>
+        </div>
+    {% endif %}
+
+    <h2>Historial</h2>
+    <ol class="timeline">
+        {% for ev in eventos %}
+            <li>
+                <time datetime="{{ ev.fecha_creacion|date('Y-m-d\\TH:i') }}">{{ ev.fecha_creacion|date('d/m/Y H:i') }}</time>
+                <strong>{{ ev.tipo|capitalize }}</strong> — {{ ev.descripcion }}
+            </li>
+        {% else %}
+            <li>Sin eventos registrados</li>
+        {% endfor %}
+    </ol>
+{% endblock %}
+
+{% block scripts %}
+    {# [feature/frontend-js] #}
+    <script type="module" src="/assets/js/detalle.js"></script>
+{% endblock %}
