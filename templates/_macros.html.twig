@@ -1,0 +1,10 @@
+{# Un campo de formulario con su hueco de error: evita repetir el mismo bloque HTML por cada input. #}
+{% macro campo(nombre, etiqueta, tipo = 'text', atributos = {}) %}
+    <div class="campo">
+        <label for="c-{{ nombre }}">{{ etiqueta }}</label>
+        <input id="c-{{ nombre }}" name="{{ nombre }}" type="{{ tipo }}"{% for clave, valor in atributos %} {{ clave }}="{{ valor }}"{% endfor %}>
+        <span class="error" data-error-for="{{ nombre }}"></span>
+    </div>
+{% endmacro %}
+
+{% macro estado(valor) %}<span class="estado estado-{{ valor }}">{{ valor }}</span>{% endmacro %}
