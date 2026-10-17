@@ -114,6 +114,7 @@ El servicio depende de **interfaces** (repositorios y `Transaccion`): por eso su
 - Un endpoint que devuelva el fragmento HTML de la tabla (o plantillas compartidas) para no tener el pintado de filas duplicado en Twig y JS
 - Autenticación y autorización (quién puede confirmar/cancelar) y registro de *quién* hizo cada evento
 - Contenedor Docker + CI (lint, tests) y migraciones versionadas en lugar de un único `.sql`
+- Mejorar el frontend tanto la UX como la UI
 
 ## Escalabilidad: 1000 reservas/hora
 1000/hora son ~0,3 escrituras por segundo: **no es un problema de carga** para este diseño; un solo servidor y una sola BD lo absorben con holgura. Lo que cambiaría, por orden de utilidad:
